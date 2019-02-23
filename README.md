@@ -1,7 +1,4 @@
-[![Build Status](https://travis-ci.org/simplesteph/kafka-stack-docker-compose.svg?branch=master)](https://travis-ci.org/simplesteph/kafka-stack-docker-compose)
-
-
-# kafka-stack-docker-compose
+# Wecodefest Workshop 2019
 
 This replicates as well as possible real deployment configurations, where you have your zookeeper servers and kafka servers actually all distinct from each other. This solves all the networking hurdles that comes with Docker and docker-compose, and is compatible cross platform.
 
@@ -112,43 +109,3 @@ docker-compose -f zk-multiple-kafka-multiple.yml down
  docker-compose -f full-stack.yml up
  docker-compose -f full-stack.yml down
  ```
-
-# FAQ
-
-## Kafka
-
-**Q: Kafka's log is too verbose, how can I reduce it?**
-
-A: Add the following line to your docker-compose environment variables: `KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"`. Full logging control can be accessed here: https://github.com/confluentinc/cp-docker-images/blob/master/debian/kafka/include/etc/confluent/docker/log4j.properties.template
-
-**Q: How do I delete data to start fresh?**
-
-A: Your data is persisted from within the docker compose folder, so if you want for example to reset the data in the full-stack docker compose, first do a `docker-compose -f full-stack.yml down`, then remove the directory `full-stack`, for example by doing `rm -r -f full-stack`.
-
-**Q: Can I change the zookeeper ports?**
-
-A: yes. Say you want to change `zoo1` port to `12181` (only relevant lines are shown):
-```
-  zoo1:
-    ports:
-      - "12181:12181"
-    environment:
-        ZOO_PORT: 12181
-        
-  kafka1:
-    environment:
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:12181"
-```
-
-**Q: Can I change the Kafka ports?**
-
-A: yes. Say you want to change `kafka1` port to `12345` (only relevant lines are shown). Note only `LISTENER_DOCKER_EXTERNAL` changes:
-```
-  kafka1:
-    image: confluentinc/cp-kafka:5.0.0
-    hostname: kafka1
-    ports:
-      - "12345:12345"
-    environment:
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_DOCKER_INTERNAL://kafka1:19092,LISTENER_DOCKER_EXTERNAL://${DOCKER_HOST_IP:-127.0.0.1}:12345
-```
